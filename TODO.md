@@ -1,4 +1,4 @@
 # todo
 
-- [ ] allow custom checkbox
+- [x] allow custom checkbox
 - [ ] allow custom styling

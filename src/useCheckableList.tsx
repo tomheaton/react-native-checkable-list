@@ -1,23 +1,25 @@
 import React from 'react';
 
-const useCheckableList = (list: any[], initialChecked: boolean[]) => {
+const useCheckableList = <T extends { id: string }>(
+  list: T[],
+  initialChecked: boolean = false
+) => {
   if ('_checked' in list) {
     throw new Error("useCheckableList: list cannot contain '_checked' key");
   }
 
-  const [checked, setChecked] = React.useState<boolean[]>(initialChecked);
+  console.log('useCheckableList', list, initialChecked);
 
-  React.useEffect(() => {
-    setChecked(initialChecked);
-  }, [initialChecked]);
+  const [checked, setChecked] = React.useState<T[]>([]);
 
-  React.useEffect(() => {
-    if (list.length !== checked.length) {
-      setChecked(list.map(() => false));
-    }
-  }, [list, checked.length]);
+  const dataWithChecked = React.useMemo(() => {
+    return list.map((item) => {
+      return { ...item, _checked: initialChecked };
+    });
+  }, [list, initialChecked]);
 
   return {
+    data: dataWithChecked,
     checked,
     setChecked,
   };

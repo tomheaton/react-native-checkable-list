@@ -1,81 +1,91 @@
 import React from 'react';
-import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import Checkbox from './Checkbox';
 
-type Props = {
-  items: { name: string; checked: boolean }[];
-  setItems: (items: { name: string; checked: boolean }[]) => void;
-  renderItem: (item: { name: string; checked: boolean }) => React.ReactElement;
-  onPress?: () => void;
-  ListHeaderComponent?: React.ComponentType<any> | React.ReactElement;
+type BaseItemType = {
+  id: string;
+  _checked: boolean;
 };
 
-const CheckableList: React.FC<Props> = ({
+type Props<T extends BaseItemType> = {
+  items: T[];
+  setItems: (items: T[]) => void;
+  onPressItem?: (item: T) => void;
+  renderItem: (item: T) => React.ReactElement;
+  renderCheckbox?: (checked: boolean, disabled: boolean) => React.ReactElement;
+  ListHeaderComponent?: React.ComponentType<any> | React.ReactElement;
+  canCheckItem?: (item: T) => boolean;
+};
+
+// TODO: add custom id extractor
+const CheckableList = <T extends BaseItemType>({
   items,
   setItems,
-  onPress,
+  onPressItem,
   renderItem,
+  renderCheckbox,
   ListHeaderComponent,
-}) => {
+  canCheckItem,
+}: Props<T>): JSX.Element => {
   const [showCheckboxes, setShowCheckboxes] = React.useState<boolean>(false);
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={items}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.itemRow}
-            onPress={() => {
-              if (showCheckboxes) {
+    <FlatList
+      data={items}
+      keyExtractor={(item) => item.id}
+      renderItem={({ item }) => (
+        <TouchableOpacity
+          style={styles.itemRow}
+          onPress={() => {
+            if (showCheckboxes) {
+              if (canCheckItem && !canCheckItem(item)) return;
+              setItems(
+                items.map((i) => {
+                  if (i.id === item.id) {
+                    return { ...i, _checked: !i._checked };
+                  }
+                  return i;
+                })
+              );
+            } else {
+              onPressItem && onPressItem(item);
+            }
+          }}
+          onLongPress={() => {
+            setShowCheckboxes((prev) => !prev);
+          }}
+        >
+          {renderItem(item)}
+          {showCheckboxes && renderCheckbox ? (
+            renderCheckbox(
+              item._checked,
+              canCheckItem ? !canCheckItem(item) : false
+            )
+          ) : (
+            <Checkbox
+              value={item._checked}
+              setValue={() => {
                 setItems(
                   items.map((i) => {
-                    if (i.name === item.name) {
-                      return { ...i, checked: !i.checked };
+                    if (i.id === item.id) {
+                      return { ...i, _checked: !i._checked };
                     }
                     return i;
                   })
                 );
-              } else {
-                onPress && onPress();
-              }
-            }}
-            onLongPress={() => {
-              setShowCheckboxes((prev) => !prev);
-            }}
-          >
-            {renderItem(item)}
-            {showCheckboxes && (
-              <Checkbox
-                value={item.checked}
-                setValue={() => {
-                  setItems(
-                    items.map((i) => {
-                      if (i.name === item.name) {
-                        return { ...i, checked: !i.checked };
-                      }
-                      return i;
-                    })
-                  );
-                }}
-              />
-            )}
-          </TouchableOpacity>
-        )}
-        ListHeaderComponent={ListHeaderComponent}
-      />
-    </View>
+              }}
+            />
+          )}
+        </TouchableOpacity>
+      )}
+      ListHeaderComponent={ListHeaderComponent}
+    />
   );
 };
 
 export default CheckableList;
 
 const styles = StyleSheet.create({
-  container: {
-    borderWidth: 2,
-    borderColor: 'blue',
-    width: '100%',
-  },
   itemRow: {
     flexDirection: 'row',
     alignItems: 'center',
