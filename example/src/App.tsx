@@ -1,7 +1,7 @@
 import Checkbox from 'expo-checkbox';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import CheckableList from 'react-native-checkable-list';
+import { Button, StyleSheet, Text, View } from 'react-native';
+import CheckableList, { useCheckedItems } from 'react-native-checkable-list';
 
 const HeaderComponent: React.FC = () => (
   <Text>
@@ -9,33 +9,26 @@ const HeaderComponent: React.FC = () => (
   </Text>
 );
 
-const App: React.FC = () => {
-  const [items, setItems] = React.useState<
-    { id: string; name: string; _checked: boolean }[]
-  >([
-    { id: 'apple', name: 'apple', _checked: false },
-    { id: 'banana', name: 'banana', _checked: false },
-    { id: 'orange', name: 'orange', _checked: false },
+export default function App() {
+  const [items, setItems] = React.useState<{ name: string; amount: number }[]>([
+    { name: 'apple', amount: 1 },
+    { name: 'banana', amount: 2 },
+    { name: 'orange', amount: 3 },
   ]);
 
-  // TODO: fix this
-  // const [itemsTest, _setItemsTest] = React.useState<
-  //   { id: string; name: string; }[]
-  // >([
-  //   { id: 'apple', name: 'apple' },
-  //   { id: 'banana', name: 'banana' },
-  //   { id: 'orange', name: 'orange' },
-  // ]);
-  // const { data } = useCheckableList(itemsTest);
+  // const [checkedItems, setCheckedItems] = React.useState<string[]>([]);
+  const { checkedItems, setCheckedItems } = useCheckedItems();
 
   return (
     <View style={styles.container}>
       <CheckableList
         items={items}
-        setItems={setItems}
+        keyExtractor={(item) => item.name}
         renderItem={(item) => (
           <View style={styles.item}>
-            <Text>{item.name}</Text>
+            <Text>
+              {item.name} x {item.amount}
+            </Text>
           </View>
         )}
         onPressItem={(item) => {
@@ -43,14 +36,18 @@ const App: React.FC = () => {
         }}
         ListHeaderComponent={HeaderComponent}
         canCheckItem={(item) => item.name !== 'banana'}
+        checkedItems={checkedItems}
+        setCheckedItems={setCheckedItems}
       />
 
       <CheckableList
         items={items}
-        setItems={setItems}
+        keyExtractor={(item) => item.name}
         renderItem={(item) => (
           <View style={styles.item}>
-            <Text>{item.name}</Text>
+            <Text>
+              {item.name} x {item.amount}
+            </Text>
           </View>
         )}
         onPressItem={(item) => {
@@ -64,16 +61,32 @@ const App: React.FC = () => {
           />
         )}
         canCheckItem={(item) => item.name !== 'banana'}
+        checkedItems={checkedItems}
+        setCheckedItems={setCheckedItems}
         ListHeaderComponent={HeaderComponent}
       />
 
+      <Button
+        title={'Delete checked items'}
+        onPress={() => {
+          setItems(items.filter((item) => !checkedItems.includes(item.name)));
+        }}
+        color={'red'}
+      />
+
+      <Button
+        title={'Clear checked items'}
+        onPress={() => {
+          setCheckedItems([]);
+        }}
+        color={'red'}
+      />
+
       <Text>{JSON.stringify(items, null, 2)}</Text>
-      {/* <Text>{JSON.stringify(data, null, 2)}</Text> */}
+      <Text>{JSON.stringify(checkedItems, null, 2)}</Text>
     </View>
   );
-};
-
-export default App;
+}
 
 const styles = StyleSheet.create({
   container: {

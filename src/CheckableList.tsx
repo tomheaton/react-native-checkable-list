@@ -2,87 +2,81 @@ import React from 'react';
 import { FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import Checkbox from './Checkbox';
 
-type BaseItemType = {
-  id: string;
-  _checked: boolean;
-};
-
 // TODO: allow custom styling
-type Props<T extends BaseItemType> = {
+type Props<T extends any> = {
   items: T[];
-  setItems: (items: T[]) => void;
   renderItem: (item: T) => React.ReactElement;
   onPressItem?: (item: T) => void;
   renderCheckbox?: (checked: boolean, disabled: boolean) => React.ReactElement;
   ListHeaderComponent?: React.ComponentType<any> | React.ReactElement;
+  // TODO: add default keyExtractor that uses index
+  keyExtractor: (item: T) => string;
   canCheckItem?: (item: T) => boolean;
+  // checkedItems?: Set<string>;
+  // setCheckedItems?: (checked: Set<string>) => void;
+  // TODO: use Set<string> instead of string[]?
+  checkedItems?: string[];
+  setCheckedItems?: (checked: string[]) => void;
 };
 
-// TODO: add custom id extractor
-const CheckableList = <T extends BaseItemType>({
+const CheckableList = <T extends any>({
   items,
-  setItems,
+  // setItems,
   onPressItem,
   renderItem,
   renderCheckbox,
   ListHeaderComponent,
+  keyExtractor,
   canCheckItem,
+  checkedItems,
+  setCheckedItems,
 }: Props<T>): JSX.Element => {
   const [showCheckboxes, setShowCheckboxes] = React.useState<boolean>(false);
 
   return (
     <FlatList
       data={items}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item }) => (
-        <TouchableOpacity
-          style={styles.itemRow}
-          onPress={() => {
-            if (showCheckboxes) {
-              if (canCheckItem && !canCheckItem(item)) return;
-              setItems(
-                items.map((i) => {
-                  if (i.id === item.id) {
-                    return { ...i, _checked: !i._checked };
-                  }
-                  return i;
-                })
-              );
-            } else {
-              onPressItem && onPressItem(item);
-            }
-          }}
-          onLongPress={() => {
-            setShowCheckboxes((prev) => !prev);
-          }}
-        >
-          {renderItem(item)}
-          {showCheckboxes && (
-            <>
-              {renderCheckbox ? (
-                renderCheckbox(
-                  item._checked,
-                  canCheckItem ? !canCheckItem(item) : false
-                )
-              ) : (
-                <Checkbox
-                  value={item._checked}
-                  setValue={() => {
-                    setItems(
-                      items.map((i) => {
-                        if (i.id === item.id) {
-                          return { ...i, _checked: !i._checked };
-                        }
-                        return i;
-                      })
-                    );
-                  }}
-                />
-              )}
-            </>
-          )}
-        </TouchableOpacity>
-      )}
+      keyExtractor={keyExtractor}
+      renderItem={({ item }) => {
+        const key = keyExtractor(item);
+
+        return (
+          <TouchableOpacity
+            style={styles.itemRow}
+            onPress={() => {
+              if (showCheckboxes) {
+                if (canCheckItem && !canCheckItem(item)) return;
+
+                if (!checkedItems || !setCheckedItems) return;
+                if (!checkedItems.includes(key)) {
+                  setCheckedItems([...checkedItems, key]);
+                } else {
+                  setCheckedItems(checkedItems.filter((i) => i !== key));
+                }
+              } else {
+                onPressItem && onPressItem(item);
+              }
+            }}
+            onLongPress={() => {
+              setShowCheckboxes((prev) => !prev);
+            }}
+          >
+            {renderItem(item)}
+            {showCheckboxes && (
+              <>
+                {renderCheckbox ? (
+                  renderCheckbox(
+                    checkedItems?.includes(key) ?? false,
+                    canCheckItem ? !canCheckItem(item) : false
+                  )
+                ) : (
+                  <Checkbox value={checkedItems?.includes(key) ?? false} />
+                )}
+              </>
+            )}
+          </TouchableOpacity>
+        );
+      }}
       ListHeaderComponent={ListHeaderComponent}
     />
   );

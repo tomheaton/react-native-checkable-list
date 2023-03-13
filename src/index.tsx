@@ -1,6 +1,6 @@
 import CheckableList from './CheckableList';
-import useCheckableList from './useCheckableList';
+import useCheckedItems from './useCheckedItems';
 
-export { useCheckableList };
+export { useCheckedItems };
 
 export default CheckableList;

@@ -2,15 +2,15 @@ import React from 'react';
 import { Text, TouchableOpacity } from 'react-native';
 
 type Props = {
+  // TODO: allow () => boolean
   value: boolean;
-  setValue: () => void;
+  setValue?: () => void;
 };
 
 const Checkbox: React.FC<Props> = ({ value, setValue }) => {
   return (
     <TouchableOpacity onPress={setValue}>
-      {/* TODO: add proper checkbox (perhaps expo-checkbox?) */}
-      <Text>{value ? 'Checked' : 'Not Checked'}</Text>
+      <Text>{value ? 'X' : 'O'}</Text>
     </TouchableOpacity>
   );
 };
