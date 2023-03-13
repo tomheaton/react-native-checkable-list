@@ -1,27 +1,30 @@
-import * as React from 'react';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import CheckableList from 'react-native-checkable-list';
 
-import { StyleSheet, View, Text } from 'react-native';
-import { multiply } from 'react-native-checkable-list';
+const App: React.FC = () => {
+  const [_checked, _setChecked] = React.useState<boolean>(false);
 
-export default function App() {
-  const [result, setResult] = React.useState<number | undefined>();
-
-  React.useEffect(() => {
-    multiply(3, 7).then(setResult);
-  }, []);
+  const items = ['apple', 'banana', 'carrot'];
 
   return (
     <View style={styles.container}>
-      <Text>Result: {result}</Text>
+      <CheckableList items={items} />
     </View>
   );
-}
+};
+
+export default App;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    margin: 25,
+    padding: 20,
+    borderWidth: 2,
+    borderColor: 'red',
   },
   box: {
     width: 60,
