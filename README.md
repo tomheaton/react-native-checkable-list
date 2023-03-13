@@ -10,7 +10,7 @@ npm install react-native-checkable-list
 
 ## Usage
 
-```js
+```ts
 import { multiply } from 'react-native-checkable-list';
 
 // ...
