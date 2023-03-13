@@ -1,38 +1,68 @@
 import React from 'react';
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Checkbox from './Checkbox';
 
 type Props = {
-  items: string[];
+  items: { name: string; checked: boolean }[];
+  setItems: (items: { name: string; checked: boolean }[]) => void;
+  renderItem: (item: { name: string; checked: boolean }) => React.ReactElement;
+  onPress?: () => void;
+  ListHeaderComponent?: React.ComponentType<any> | React.ReactElement;
 };
 
-const CheckableList: React.FC<Props> = ({ items }) => {
-  const [showCheckboxes, _setShowCheckboxes] = React.useState<boolean>(true);
-  const [checked, setChecked] = React.useState<boolean>(false);
+const CheckableList: React.FC<Props> = ({
+  items,
+  setItems,
+  onPress,
+  renderItem,
+  ListHeaderComponent,
+}) => {
+  const [showCheckboxes, setShowCheckboxes] = React.useState<boolean>(false);
 
   return (
     <View style={styles.container}>
       <FlatList
         data={items}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.itemRow}>
-            <View style={styles.item}>
-              <Text>{item}</Text>
-            </View>
+          <TouchableOpacity
+            style={styles.itemRow}
+            onPress={() => {
+              if (showCheckboxes) {
+                setItems(
+                  items.map((i) => {
+                    if (i.name === item.name) {
+                      return { ...i, checked: !i.checked };
+                    }
+                    return i;
+                  })
+                );
+              } else {
+                onPress && onPress();
+              }
+            }}
+            onLongPress={() => {
+              setShowCheckboxes((prev) => !prev);
+            }}
+          >
+            {renderItem(item)}
             {showCheckboxes && (
               <Checkbox
-                value={checked}
-                setValue={() => setChecked((prev) => !prev)}
+                value={item.checked}
+                setValue={() => {
+                  setItems(
+                    items.map((i) => {
+                      if (i.name === item.name) {
+                        return { ...i, checked: !i.checked };
+                      }
+                      return i;
+                    })
+                  );
+                }}
               />
             )}
           </TouchableOpacity>
         )}
+        ListHeaderComponent={ListHeaderComponent}
       />
     </View>
   );
@@ -48,12 +78,9 @@ const styles = StyleSheet.create({
   },
   itemRow: {
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     borderWidth: 2,
     borderColor: 'green',
-  },
-  item: {
-    flex: 1,
-    borderWidth: 2,
-    borderColor: 'red',
   },
 });
