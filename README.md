@@ -5,37 +5,45 @@ react native checkable list
 ## Installation
 
 ```sh
+# npm
 npm install react-native-checkable-list
+
+# yarn
+yarn add react-native-checkable-list
 ```
 
 ## Usage
 
 ```jsx
-import CheckableList from 'react-native-checkable-list';
+import CheckableList, { useCheckedItems } from 'react-native-checkable-list';
 
 export default function App() {
-  const [items, setItems] = React.useState<
-    { id: string; name: string; _checked: boolean }[]
-  >([
-    { id: 'apple', name: 'apple', _checked: false },
-    { id: 'banana', name: 'banana', _checked: false },
-    { id: 'orange', name: 'orange', _checked: false },
+  const [items, setItems] = React.useState<{ name: string; amount: number }[]>([
+    { name: 'apple', amount: 1 },
+    { name: 'banana', amount: 2 },
+    { name: 'orange', amount: 3 },
   ]);
+
+  const { checkedItems, setCheckedItems } = useCheckedItems();
 
   return (
     <View>
       <CheckableList
         items={items}
-        setItems={setItems}
+        keyExtractor={(item) => item.name}
         renderItem={(item) => (
           <View style={styles.item}>
-            <Text>{item.name}</Text>
+            <Text>
+              {item.name} x {item.amount}
+            </Text>
           </View>
         )}
         onPressItem={(item) => {
           console.log('onPressItem', item.name);
         }}
         canCheckItem={(item) => item.name !== 'banana'}
+        checkedItems={checkedItems}
+        setCheckedItems={setCheckedItems}
       />
     </View>
   );
