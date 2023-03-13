@@ -4,7 +4,7 @@ react native checkable list
 
 ## Demo
 
-![demo](./rncl-demo.gif)
+<img src="./rncl-demo.gif" width="200">
 
 ## Installation
 
