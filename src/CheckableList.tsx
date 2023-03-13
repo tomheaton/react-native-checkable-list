@@ -14,6 +14,7 @@ type Props<T extends any> = {
   canCheckItem?: (item: T) => boolean;
   checkedItems?: string[];
   setCheckedItems?: (checked: string[]) => void;
+  leftCheckboxes?: boolean;
 };
 
 const CheckableList = <T extends any>({
@@ -27,6 +28,7 @@ const CheckableList = <T extends any>({
   canCheckItem,
   checkedItems,
   setCheckedItems,
+  leftCheckboxes = false,
 }: Props<T>): JSX.Element => {
   const [showCheckboxes, setShowCheckboxes] = React.useState<boolean>(false);
 
@@ -62,7 +64,7 @@ const CheckableList = <T extends any>({
               setShowCheckboxes((prev) => !prev);
             }}
           >
-            {renderItem(item)}
+            {!leftCheckboxes && renderItem(item)}
             {showCheckboxes && (
               <>
                 {renderCheckbox ? (
@@ -75,6 +77,7 @@ const CheckableList = <T extends any>({
                 )}
               </>
             )}
+            {leftCheckboxes && renderItem(item)}
           </TouchableOpacity>
         );
       }}

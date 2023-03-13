@@ -64,6 +64,7 @@ export default function App() {
         checkedItems={checkedItems}
         setCheckedItems={setCheckedItems}
         ListHeaderComponent={HeaderComponent}
+        leftCheckboxes
       />
 
       <Button
