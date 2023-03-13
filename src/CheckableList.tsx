@@ -12,9 +12,6 @@ type Props<T extends any> = {
   // TODO: add default keyExtractor that uses index
   keyExtractor: (item: T) => string;
   canCheckItem?: (item: T) => boolean;
-  // checkedItems?: Set<string>;
-  // setCheckedItems?: (checked: Set<string>) => void;
-  // TODO: use Set<string> instead of string[]?
   checkedItems?: string[];
   setCheckedItems?: (checked: string[]) => void;
 };
@@ -32,6 +29,10 @@ const CheckableList = <T extends any>({
   setCheckedItems,
 }: Props<T>): JSX.Element => {
   const [showCheckboxes, setShowCheckboxes] = React.useState<boolean>(false);
+
+  const s = new Set();
+  s.add('a');
+  s.delete('a');
 
   return (
     <FlatList
