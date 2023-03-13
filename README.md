@@ -32,7 +32,7 @@ export default function App() {
         items={items}
         keyExtractor={(item) => item.name}
         renderItem={(item) => (
-          <View style={styles.item}>
+          <View>
             <Text>
               {item.name} x {item.amount}
             </Text>

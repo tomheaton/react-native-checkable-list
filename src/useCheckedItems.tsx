@@ -1,7 +1,6 @@
 import React from 'react';
 
 const useCheckedItems = () => {
-  // TODO: allow items to start checked
   const [checked, setChecked] = React.useState<string[]>([]);
 
   return {

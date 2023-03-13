@@ -1,56 +1,70 @@
 import React from 'react';
-import { FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
 import Checkbox from './Checkbox';
 
-// TODO: allow custom styling
 type Props<T extends any> = {
-  items: T[];
+  data: T[];
   renderItem: (item: T) => React.ReactElement;
   onPressItem?: (item: T) => void;
   renderCheckbox?: (checked: boolean, disabled: boolean) => React.ReactElement;
-  ListHeaderComponent?: React.ComponentType<any> | React.ReactElement;
   // TODO: add default keyExtractor that uses index
   keyExtractor: (item: T) => string;
   canCheckItem?: (item: T) => boolean;
   checkedItems?: string[];
   setCheckedItems?: (checked: string[]) => void;
   leftCheckboxes?: boolean;
-};
+  ItemRowStyle?: StyleProp<ViewStyle>;
+  // TODO: add more props?
+} & Pick<
+  React.ComponentProps<typeof FlatList>,
+  | 'style'
+  | 'contentContainerStyle'
+  | 'refreshing'
+  | 'onRefresh'
+  | 'ListHeaderComponent'
+  | 'ListHeaderComponentStyle'
+  | 'ListFooterComponent'
+  | 'ListFooterComponentStyle'
+>;
 
 const CheckableList = <T extends any>({
-  items,
-  // setItems,
+  data,
   onPressItem,
   renderItem,
   renderCheckbox,
-  ListHeaderComponent,
   keyExtractor,
   canCheckItem,
   checkedItems,
   setCheckedItems,
   leftCheckboxes = false,
+  ItemRowStyle,
+  style,
+  ...rest
 }: Props<T>): JSX.Element => {
   const [showCheckboxes, setShowCheckboxes] = React.useState<boolean>(false);
 
-  const s = new Set();
-  s.add('a');
-  s.delete('a');
-
   return (
     <FlatList
-      data={items}
+      style={[styles.container, style]}
+      data={data}
       keyExtractor={keyExtractor}
       renderItem={({ item }) => {
         const key = keyExtractor(item);
-
         return (
           <TouchableOpacity
-            style={styles.itemRow}
+            style={[styles.itemRow, ItemRowStyle]}
             onPress={() => {
               if (showCheckboxes) {
                 if (canCheckItem && !canCheckItem(item)) return;
 
                 if (!checkedItems || !setCheckedItems) return;
+
                 if (!checkedItems.includes(key)) {
                   setCheckedItems([...checkedItems, key]);
                 } else {
@@ -81,7 +95,7 @@ const CheckableList = <T extends any>({
           </TouchableOpacity>
         );
       }}
-      ListHeaderComponent={ListHeaderComponent}
+      {...rest}
     />
   );
 };
@@ -89,11 +103,12 @@ const CheckableList = <T extends any>({
 export default CheckableList;
 
 const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+  },
   itemRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderWidth: 2,
-    borderColor: 'green',
   },
 });
