@@ -2,6 +2,10 @@
 
 react native checkable list
 
+## Demo
+
+![demo](./rncl-demo.gif)
+
 ## Installation
 
 ```sh
