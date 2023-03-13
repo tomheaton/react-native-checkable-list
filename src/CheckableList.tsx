@@ -7,11 +7,12 @@ type BaseItemType = {
   _checked: boolean;
 };
 
+// TODO: allow custom styling
 type Props<T extends BaseItemType> = {
   items: T[];
   setItems: (items: T[]) => void;
-  onPressItem?: (item: T) => void;
   renderItem: (item: T) => React.ReactElement;
+  onPressItem?: (item: T) => void;
   renderCheckbox?: (checked: boolean, disabled: boolean) => React.ReactElement;
   ListHeaderComponent?: React.ComponentType<any> | React.ReactElement;
   canCheckItem?: (item: T) => boolean;
@@ -56,25 +57,29 @@ const CheckableList = <T extends BaseItemType>({
           }}
         >
           {renderItem(item)}
-          {showCheckboxes && renderCheckbox ? (
-            renderCheckbox(
-              item._checked,
-              canCheckItem ? !canCheckItem(item) : false
-            )
-          ) : (
-            <Checkbox
-              value={item._checked}
-              setValue={() => {
-                setItems(
-                  items.map((i) => {
-                    if (i.id === item.id) {
-                      return { ...i, _checked: !i._checked };
-                    }
-                    return i;
-                  })
-                );
-              }}
-            />
+          {showCheckboxes && (
+            <>
+              {renderCheckbox ? (
+                renderCheckbox(
+                  item._checked,
+                  canCheckItem ? !canCheckItem(item) : false
+                )
+              ) : (
+                <Checkbox
+                  value={item._checked}
+                  setValue={() => {
+                    setItems(
+                      items.map((i) => {
+                        if (i.id === item.id) {
+                          return { ...i, _checked: !i._checked };
+                        }
+                        return i;
+                      })
+                    );
+                  }}
+                />
+              )}
+            </>
           )}
         </TouchableOpacity>
       )}

@@ -33,14 +33,14 @@ const App: React.FC = () => {
       <CheckableList
         items={items}
         setItems={setItems}
-        onPressItem={(item) => {
-          console.log('onPressItem', item);
-        }}
         renderItem={(item) => (
           <View style={styles.item}>
             <Text>{item.name}</Text>
           </View>
         )}
+        onPressItem={(item) => {
+          console.log('onPressItem', item.name);
+        }}
         ListHeaderComponent={HeaderComponent}
         canCheckItem={(item) => item.name !== 'banana'}
       />
@@ -48,14 +48,14 @@ const App: React.FC = () => {
       <CheckableList
         items={items}
         setItems={setItems}
-        onPressItem={(item) => {
-          console.log('onPressItem', item);
-        }}
         renderItem={(item) => (
           <View style={styles.item}>
             <Text>{item.name}</Text>
           </View>
         )}
+        onPressItem={(item) => {
+          console.log('onPressItem', item.name);
+        }}
         renderCheckbox={(checked, disabled) => (
           <Checkbox
             value={checked}

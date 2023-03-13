@@ -10,12 +10,36 @@ npm install react-native-checkable-list
 
 ## Usage
 
-```ts
-import { multiply } from 'react-native-checkable-list';
+```jsx
+import CheckableList from 'react-native-checkable-list';
 
-// ...
+export default function App() {
+  const [items, setItems] = React.useState<
+    { id: string; name: string; _checked: boolean }[]
+  >([
+    { id: 'apple', name: 'apple', _checked: false },
+    { id: 'banana', name: 'banana', _checked: false },
+    { id: 'orange', name: 'orange', _checked: false },
+  ]);
 
-const result = await multiply(3, 7);
+  return (
+    <View>
+      <CheckableList
+        items={items}
+        setItems={setItems}
+        renderItem={(item) => (
+          <View style={styles.item}>
+            <Text>{item.name}</Text>
+          </View>
+        )}
+        onPressItem={(item) => {
+          console.log('onPressItem', item.name);
+        }}
+        canCheckItem={(item) => item.name !== 'banana'}
+      />
+    </View>
+  );
+}
 ```
 
 ## Contributing

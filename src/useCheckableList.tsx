@@ -1,5 +1,6 @@
 import React from 'react';
 
+// TODO: custom hook for checkable data
 const useCheckableList = <T extends { id: string }>(
   list: T[],
   initialChecked: boolean = false
@@ -7,8 +8,6 @@ const useCheckableList = <T extends { id: string }>(
   if ('_checked' in list) {
     throw new Error("useCheckableList: list cannot contain '_checked' key");
   }
-
-  console.log('useCheckableList', list, initialChecked);
 
   const [checked, setChecked] = React.useState<T[]>([]);
 
