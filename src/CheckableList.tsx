@@ -75,6 +75,17 @@ const CheckableList = <T extends any>({
               }
             }}
             onLongPress={() => {
+              if (!showCheckboxes) {
+                if (canCheckItem && !canCheckItem(item)) return;
+
+                if (!checkedItems || !setCheckedItems) return;
+
+                if (!checkedItems.includes(key)) {
+                  setCheckedItems([...checkedItems, key]);
+                } else {
+                  setCheckedItems(checkedItems.filter((i) => i !== key));
+                }
+              }
               setShowCheckboxes((prev) => !prev);
             }}
           >

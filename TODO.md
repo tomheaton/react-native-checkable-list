@@ -6,4 +6,4 @@
 - [x] add custom key extractor
 - [x] add default key extractor
 - [ ] fix bug with deleting items and their checked state persisting in checked items array
-- [ ] check first item on long press
+- [x] check item on initial long press
