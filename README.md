@@ -19,6 +19,8 @@ yarn add react-native-checkable-list
 ## Usage
 
 ```jsx
+import React from "react";
+import { View, Text } from "react-native";
 import CheckableList, { useCheckedItems } from 'react-native-checkable-list';
 
 export default function App() {
