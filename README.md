@@ -2,10 +2,8 @@
 
 react native checkable list
 
-## Preview
-
 <p align="center">
-  <img src="./rncl-demo.gif" width="200">
+  <img src="./demo.gif" width="200">
 </p>
 
 ## Installation
